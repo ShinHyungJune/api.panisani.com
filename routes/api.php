@@ -34,6 +34,7 @@ Route::post("/verifyNumbers", [\App\Http\Controllers\Api\VerifyNumberController:
 Route::patch("/verifyNumbers", [\App\Http\Controllers\Api\VerifyNumberController::class, "update"]);
 
 Route::resource("/youtubes", \App\Http\Controllers\Api\YoutubeController::class);
+Route::get("/communities", [\App\Http\Controllers\Api\CommunityController::class, "index"]);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get("/user",function (Request $request) {
@@ -44,5 +45,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete("/users", [\App\Http\Controllers\Api\UserController::class, "destroy"]);
     Route::get("/logout", [\App\Http\Controllers\Api\UserController::class, "logout"]);
 
+    Route::resource("/communities", \App\Http\Controllers\Api\CommunityController::class)->except(["index"]);
 });
 
