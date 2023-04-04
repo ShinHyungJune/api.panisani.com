@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CommunityResource extends JsonResource
+class BoardResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,13 +18,11 @@ class CommunityResource extends JsonResource
         return [
             "id" => $this->id,
             "user_id" => $this->user_id,
+            "community_id" => $this->community_id,
             "title" => $this->title,
-            "description" => $this->description,
-            "url" => $this->url,
+            "order" => $this->order,
             "count_view" => $this->count_view,
-            "count_view_yesterday" => $this->count_view_yesterday,
-            "accept" => $this->accept,
-            "has_admin" => $this->has_admin,
+            "open" => $this->open,
             "created_at" => Carbon::make($this->created_at)->format("Y-m-d H:i")
         ];
     }

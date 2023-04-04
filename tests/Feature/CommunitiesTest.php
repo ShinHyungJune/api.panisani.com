@@ -4,12 +4,16 @@ namespace Tests\Feature;
 
 use App\Models\Community;
 use App\Models\User;
+use App\Models\Visit;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class CommunitiesTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected $user;
 
     protected function setUp(): void
@@ -25,6 +29,239 @@ class CommunitiesTest extends TestCase
             "description" => "테스트",
             "url" => "https://naver.com",
         ];
+    }
+
+    /** @test */
+    public function 커뮤니티목록을_조회할_수_있다()
+    {
+        $communities = Community::factory()->count(10)->create([
+            "accept" => 1
+        ]);
+
+        $items = $this->json("get", "/api/communities")->decodeResponseJson()["data"];
+
+        $this->assertCount(count($communities), $items);
+    }
+
+    /** @test */
+    public function 허용된_커뮤니티목록만_노출된다()
+    {
+        $accepts = Community::factory()->count(10)->create([
+            "accept" => 1
+        ]);
+
+        $inaccepts = Community::factory()->count(10)->create([
+            "accept" => 0
+        ]);
+
+        $items = $this->json("get", "/api/communities")->decodeResponseJson()["data"];
+
+        $this->assertCount(count($accepts), $items);
+    }
+
+    /** @test */
+    public function 특정_사용자의_커뮤니티목록을_조회할_수_있다()
+    {
+        $other = User::factory()->create();
+
+        $otherCommunities = Community::factory()->count(10)->create([
+            "user_id" => $other->id,
+            "accept" => 1
+        ]);
+
+        $myCommunities = Community::factory()->count(10)->create([
+            "user_id" => $this->user->id,
+            "accept" => 1
+        ]);
+
+        $form = [
+            "user_id" => $other->id
+        ];
+
+        $items = $this->json("get", "/api/communities", $form)->decodeResponseJson()["data"];
+
+        $this->assertCount(count($otherCommunities), $items);
+    }
+
+    /** @test */
+    public function 조회수순으로_커뮤니티를_조회할_수_있다()
+    {
+        for($i = 0; $i < 10; $i++){
+            Community::factory()->create([
+                "accept" => 1,
+                "count_view" => rand(1,1000)
+            ]);
+        }
+
+        $form = [
+            "order_by" => "count_view"
+        ];
+
+        $items = $this->json("get", "/api/communities", $form)->decodeResponseJson()["data"];
+
+        $prevItem = null;
+
+        foreach($items as $item){
+            if($prevItem)
+                $this->assertTrue($item["count_view"] < $prevItem["count_view"]);
+
+            $prevItem = $item;
+        }
+    }
+
+    /** @test */
+    public function 어제기준_조회수가_높은순으로_커뮤니티목록을_조회할_수_있다()
+    {
+        for($i = 0; $i < 10; $i++){
+            Community::factory()->create([
+                "accept" => 1,
+                "count_view_yesterday" => rand(1,1000)
+            ]);
+        }
+
+        $form = [
+            "order_by" => "count_view_yesterday"
+        ];
+
+        $items = $this->json("get", "/api/communities", $form)->decodeResponseJson()["data"];
+
+        $prevItem = null;
+
+        foreach($items as $item){
+            if($prevItem)
+                $this->assertTrue($item["count_view_yesterday"] < $prevItem["count_view_yesterday"]);
+
+            $prevItem = $item;
+        }
+    }
+
+    /** @test */
+    public function 한글초성별_커뮤니티목록을_조회할_수_있다()
+    {
+        Community::factory()->create([
+            "accept" => 1,
+            "title" => "고라니"
+        ]);
+
+        Community::factory()->create([
+            "accept" => 1,
+            "title" => "강아지"
+        ]);
+
+        Community::factory()->create([
+            "accept" => 1,
+            "title" => "망나니"
+        ]);
+
+        $items = $this->json("get", "/api/communitiesByChar")->decodeResponseJson();
+
+        $this->assertCount(2, $items["ㄱ"]);
+        $this->assertCount(1, $items["ㅁ"]);
+
+    }
+
+    /** @test */
+    public function 알파벳별_커뮤니티목록을_조회할_수_있다()
+    {
+        Community::factory()->create([
+            "accept" => 1,
+            "title" => "abc"
+        ]);
+
+        Community::factory()->create([
+            "accept" => 1,
+            "title" => "apple"
+        ]);
+
+        Community::factory()->create([
+            "accept" => 1,
+            "title" => "cd"
+        ]);
+
+        $items = $this->json("get", "/api/communitiesByChar")->decodeResponseJson();
+
+        $this->assertCount(2, $items["a"]);
+        $this->assertCount(1, $items["c"]);
+    }
+
+    /** @test */
+    public function 검색어가_포함된_커뮤니티_목록을_조회할_수_있다()
+    {
+        $word = "test";
+
+        Community::factory()->create([
+            "accept" => 1,
+            "title" => "a{$word}c"
+        ]);
+
+        Community::factory()->create([
+            "accept" => 1,
+            "title" => "bbbb{$word}"
+        ]);
+
+        Community::factory()->create([
+            "accept" => 1,
+            "title" => "cd"
+        ]);
+
+        $form = [
+            "word" => $word
+        ];
+
+        $items = $this->json("get", "/api/communities", $form)->decodeResponseJson()["data"];
+
+        $this->assertCount(2, $items);
+    }
+
+    /** @test */
+    public function 조회수집계를_실행하면_어제자_조회수가_기록된다()
+    {
+        $community = Community::factory()->create();
+
+        $visits = Visit::factory()->count(100)->create([
+            "community_id" => $community->id,
+            "created_at" => Carbon::yesterday()
+        ]);
+
+        $this->artisan('calculate:communityCountView');
+
+        $community = Community::find($community->id);
+
+        $this->assertEquals(count($visits), $community->count_view);
+    }
+
+    /** @test */
+    public function 조회수집계를_여러일에_걸쳐_실행하면_조회수가_누적된다()
+    {
+        $community = Community::factory()->create();
+
+        // 집계
+        $visits = Visit::factory()->count(100)->create([
+            "community_id" => $community->id,
+            "created_at" => Carbon::yesterday()
+        ]);
+
+        $this->artisan('calculate:communityCountView');
+
+        $community = Community::find($community->id);
+
+        $this->assertEquals(count($visits), $community->count_view_yesterday);
+        $this->assertEquals(count($visits), $community->count_view);
+
+        // 1일 추가해서 재집계
+        $secondVisits = Visit::factory()->count(50)->create([
+            "community_id" => $community->id,
+            "created_at" => Carbon::today()
+        ]);
+
+        $this->travelTo(Carbon::now()->addDay());
+
+        $this->artisan('calculate:communityCountView');
+
+        $community = Community::find($community->id);
+
+        $this->assertEquals(count($secondVisits), $community->count_view_yesterday);
+        $this->assertEquals(count($visits) + count($secondVisits), $community->count_view);
     }
 
     /** @test */

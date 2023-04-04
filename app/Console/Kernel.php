@@ -2,7 +2,8 @@
 
 namespace App\Console;
 
-use App\Console\Commands\FormatCars;
+use App\Console\Commands\CalculateBoardCountView;
+use App\Console\Commands\CalculateCommunityCountView;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -14,7 +15,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        FormatCars::class,
+        CalculateCommunityCountView::class,
+        CalculateBoardCountView::class,
     ];
 
     /**

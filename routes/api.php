@@ -34,7 +34,10 @@ Route::post("/verifyNumbers", [\App\Http\Controllers\Api\VerifyNumberController:
 Route::patch("/verifyNumbers", [\App\Http\Controllers\Api\VerifyNumberController::class, "update"]);
 
 Route::resource("/youtubes", \App\Http\Controllers\Api\YoutubeController::class);
+
+Route::get("/communitiesByChar", [\App\Http\Controllers\Api\CommunityController::class, "indexByChar"]);
 Route::get("/communities", [\App\Http\Controllers\Api\CommunityController::class, "index"]);
+Route::get("/boards", [\App\Http\Controllers\Api\BoardController::class, "index"]);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get("/user",function (Request $request) {
@@ -46,5 +49,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get("/logout", [\App\Http\Controllers\Api\UserController::class, "logout"]);
 
     Route::resource("/communities", \App\Http\Controllers\Api\CommunityController::class)->except(["index"]);
+    Route::get("/boardsByMe", [\App\Http\Controllers\Api\BoardController::class, "indexByMe"]);
+    Route::patch("/boards/up", [\App\Http\Controllers\Api\BoardController::class, "up"]);
+    Route::patch("/boards/down", [\App\Http\Controllers\Api\BoardController::class, "down"]);
+    Route::resource("/boards", \App\Http\Controllers\Api\BoardController::class)->except(["index"]);
 });
 

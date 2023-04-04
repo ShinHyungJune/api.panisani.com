@@ -108,178 +108,18 @@ class User extends Authenticatable implements HasMedia
         return "일반";
     }
 
-    public function pointHistories()
+    public function communities()
     {
-        return $this->hasMany(PointHistory::class);
+        return $this->hasMany(Community::class);
     }
 
-    public function changePoint($type, $item = null)
+    public function boards()
     {
-        $basic = Basic::first();
-
-        if($type === PointHistoryType::REGISTER) {
-            $point = $basic->point_register;
-
-            $this->update(["point" => $this->point + $point]);
-
-            $pointHistory = $this->pointHistories()->create([
-                "type" => PointHistoryType::REGISTER,
-                "point" => $point,
-                "point_leave" => $this->point,
-            ]);
-
-            return [
-                "success" => true,
-                "point" => $point,
-                "message" => "성공적으로 처리되었습니다."
-            ];
-        }
-
-        if($type === PointHistoryType::RECOMMEND) {
-            $point = $basic->point_recommend;
-
-            $this->update(["point" => $this->point + $point]);
-
-            $this->pointHistories()->create([
-                "type" => PointHistoryType::RECOMMEND,
-                "point" => $point,
-                "point_leave" => $this->point,
-            ]);
-
-            return [
-                "success" => true,
-                "point" => $point,
-                "message" => "성공적으로 처리되었습니다."
-            ];
-        }
-
-        if($type === PointHistoryType::PURCHASE_ORDER) {
-            $point = $item->product_point;
-
-            $this->update(["point" => $this->point + $point]);
-
-            $this->pointHistories()->create([
-                "type" => PointHistoryType::PURCHASE_ORDER,
-                "point" => $point,
-                "point_leave" => $this->point,
-            ]);
-
-            return [
-                "success" => true,
-                "point" => $point,
-                "message" => "성공적으로 처리되었습니다."
-            ];
-        }
-
-        if($type === PointHistoryType::PURCHASE_CHECK) {
-            $point = $item->point;
-
-            if($this->point < $item->point)
-                return [
-                    "success" => false,
-                    "point" => $point,
-                    "message" => "마일리지가 부족합니다.",
-                    "item" => $item
-                ];
-
-            $this->update(["point" => $this->point - $point]);
-
-            $this->pointHistories()->create([
-                "type" => PointHistoryType::PURCHASE_ORDER,
-                "point" => -$point,
-                "point_leave" => $this->point,
-                "item" => $item
-            ]);
-
-            return [
-                "success" => true,
-                "point" => $point,
-                "message" => "성공적으로 처리되었습니다.",
-                "item" => $item
-            ];
-        }
-
-        if($type === PointHistoryType::PURCHASE_PROTECT) {
-            $point = $item->point;
-
-            if($this->point < $item->point)
-                return [
-                    "success" => false,
-                    "point" => $point,
-                    "message" => "마일리지가 부족합니다.",
-                    "item" => $item
-                ];
-
-            $this->update(["point" => $this->point - $point]);
-
-            $this->pointHistories()->create([
-                "type" => PointHistoryType::PURCHASE_CHECK,
-                "point" => -$point,
-                "point_leave" => $this->point,
-            ]);
-
-            return [
-                "success" => true,
-                "point" => $point,
-                "message" => "성공적으로 처리되었습니다.",
-                "item" => $item
-            ];
-        }
-
-        return [
-            "success" => false,
-            "point" => 0,
-            "message" => "충전 유형이 없습니다."
-        ];
+        return $this->hasMany(Board::class);
     }
 
-    public function serviceChecks()
+    public function posts()
     {
-        return $this->hasMany(ServiceCheck::class);
-    }
-
-    public function serviceProtects()
-    {
-        return $this->hasMany(ServiceProtect::class);
-    }
-
-    public function consultings()
-    {
-        return $this->hasMany(Consulting::class);
-    }
-
-    public function assignments()
-    {
-        return $this->hasMany(Assignment::class);
-    }
-
-    public function finishes()
-    {
-        return $this->hasMany(Finish::class);
-    }
-
-    public function qnas()
-    {
-        return $this->hasMany(Qna::class);
-    }
-
-    public function suggestions()
-    {
-        return $this->hasMany(Suggestion::class);
-    }
-
-    public function reviews()
-    {
-        return $this->hasMany(Review::class);
-    }
-
-    public function latestCars()
-    {
-        return $this->hasMany(LatestCar::class);
-    }
-
-    public function interestCars()
-    {
-        return $this->hasMany(InterestCar::class);
+        return $this->hasMany(Post::class);
     }
 }
