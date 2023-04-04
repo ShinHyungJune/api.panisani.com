@@ -24,6 +24,7 @@ class CreateVisitsTable extends Migration
             $table->foreign("board_id")->references("id")->on("boards");
             $table->unsignedBigInteger("post_id")->nullable();
             $table->foreign("post_id")->references("id")->on("posts");
+            $table->index(["post_id", "created_at"]);
             $table->timestamps();
         });
     }

@@ -20,6 +20,8 @@ class Visit extends Model
                 $post = Post::find($model->post_id);
 
                 if($post) {
+                    $post->update(["count_view" => $post->count_view + 1]);
+
                     $model->board_id = $post->board_id;
 
                     $board = Board::find($post->board_id);

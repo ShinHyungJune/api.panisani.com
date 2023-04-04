@@ -39,6 +39,9 @@ Route::get("/communitiesByChar", [\App\Http\Controllers\Api\CommunityController:
 Route::get("/communities", [\App\Http\Controllers\Api\CommunityController::class, "index"]);
 Route::get("/boards", [\App\Http\Controllers\Api\BoardController::class, "index"]);
 
+Route::get("/posts", [\App\Http\Controllers\Api\PostController::class, "index"]);
+Route::get("/posts/{post}", [\App\Http\Controllers\Api\PostController::class, "show"]);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get("/user",function (Request $request) {
         return $request->user() ? \App\Http\Resources\UserResource::make($request->user()) : "";
@@ -53,5 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch("/boards/up", [\App\Http\Controllers\Api\BoardController::class, "up"]);
     Route::patch("/boards/down", [\App\Http\Controllers\Api\BoardController::class, "down"]);
     Route::resource("/boards", \App\Http\Controllers\Api\BoardController::class)->except(["index"]);
+
+    Route::resource("/posts", \App\Http\Controllers\Api\PostController::class)->except(["index", "show"]);
 });
 
