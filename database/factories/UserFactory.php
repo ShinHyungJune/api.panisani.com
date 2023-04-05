@@ -26,6 +26,7 @@ class UserFactory extends Factory
         return [
             'admin' => false,
             'ids' => $this->faker->name(),
+            'nickname' => $this->faker->name(),
             'name' => $this->faker->name(),
             'sex' => "공개안함",
             'birth' => Carbon::now()->format("Y"),

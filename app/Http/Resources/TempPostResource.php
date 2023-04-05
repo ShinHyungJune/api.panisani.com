@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CommentResource extends JsonResource
+class TempPostResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,17 +17,9 @@ class CommentResource extends JsonResource
     {
         return [
             "id" => $this->id,
-            "user" => [
-                "id" => $this->user->id,
-                "nickname" => $this->user->nickname,
-            ],
-            "description" => $this->description,
-            "count_comment" => $this->comments()->count(),
-            "count_like" => $this->count_like,
-            "count_hate" => $this->count_hate,
-            "best" => $this->best,
-            "isLike" => $this->isLike,
-            "isHate" => $this->isHate,
+            "board_id" => $this->board_id ?? "",
+            "title" => $this->title ?? "",
+            "description" => $this->description ?? "",
             "created_at" => Carbon::make($this->created_at)->format("Y-m-d H:i")
         ];
     }

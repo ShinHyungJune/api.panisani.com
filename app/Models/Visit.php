@@ -24,10 +24,7 @@ class Visit extends Model
 
                     $model->board_id = $post->board_id;
 
-                    $board = Board::find($post->board_id);
-
-                    if($board)
-                        $model->community_id = $board->community_id;
+                    $model->community_id = $post->board->community_id;
                 }
             }
         });

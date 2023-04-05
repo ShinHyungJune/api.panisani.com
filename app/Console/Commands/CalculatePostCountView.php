@@ -53,10 +53,6 @@ class CalculatePostCountView extends Command
                     ->where("created_at", ">=", Carbon::now()->subDay()->startOfDay())
                     ->where("created_at", "<=", Carbon::now()->subDay()->endOfDay())
                     ->count(),
-                "count_recommend" => $item->recommends()
-                    ->where("created_at", ">=", Carbon::now()->subDay()->startOfDay())
-                    ->where("created_at", "<=", Carbon::now()->subDay()->endOfDay())
-                    ->count(),
                 "count_like" => $item->likes()
                     ->where("created_at", ">=", Carbon::now()->subDay()->startOfDay())
                     ->where("created_at", "<=", Carbon::now()->subDay()->endOfDay())
@@ -76,10 +72,6 @@ class CalculatePostCountView extends Command
                     ->where("created_at", ">=", Carbon::now()->subWeek()->startOfWeek()->startOfDay())
                     ->where("created_at", "<=", Carbon::now()->subWeek()->endOfWeek()->endOfDay())
                     ->count(),
-                "count_recommend" => $item->recommends()
-                    ->where("created_at", ">=", Carbon::now()->subWeek()->startOfWeek()->startOfDay())
-                    ->where("created_at", "<=", Carbon::now()->subWeek()->endOfWeek()->endOfDay())
-                    ->count(),
                 "count_like" => $item->likes()
                     ->where("created_at", ">=", Carbon::now()->subWeek()->startOfWeek()->startOfDay())
                     ->where("created_at", "<=", Carbon::now()->subWeek()->endOfWeek()->endOfDay())
@@ -93,13 +85,11 @@ class CalculatePostCountView extends Command
             $item->update([
                 "count_view_yesterday" => $yesterday["count_view"],
                 "count_comment_yesterday" => $yesterday["count_comment"],
-                "count_recommend_yesterday" => $yesterday["count_recommend"],
                 "count_like_yesterday" => $yesterday["count_like"],
                 "count_hate_yesterday" => $yesterday["count_hate"],
 
                 "count_view_last_week" => $lastWeek["count_view"],
                 "count_comment_last_week" => $lastWeek["count_comment"],
-                "count_recommend_last_week" => $lastWeek["count_recommend"],
                 "count_like_last_week" => $lastWeek["count_like"],
                 "count_hate_last_week" => $lastWeek["count_hate"],
             ]);

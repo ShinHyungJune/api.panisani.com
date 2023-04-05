@@ -22,7 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::post("/imageUpload", [\App\Http\Controllers\Api\ImageController::class, "store"]);
-Route::post("/visitors", [\App\Http\Controllers\Api\VisitorController::class, "store"]);
+Route::post("/visits", [\App\Http\Controllers\Api\VisitController::class, "store"]);
 Route::post("/login", [\App\Http\Controllers\Api\UserController::class, "login"]);
 Route::post("/users", [\App\Http\Controllers\Api\UserController::class, "store"]);
 
@@ -41,6 +41,8 @@ Route::get("/boards", [\App\Http\Controllers\Api\BoardController::class, "index"
 
 Route::get("/posts", [\App\Http\Controllers\Api\PostController::class, "index"]);
 Route::get("/posts/{post}", [\App\Http\Controllers\Api\PostController::class, "show"]);
+Route::get("/comments", [\App\Http\Controllers\Api\CommentController::class, "index"]);
+Route::get("/commentsByBest", [\App\Http\Controllers\Api\CommentController::class, "indexByBest"]);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get("/user",function (Request $request) {
@@ -58,5 +60,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource("/boards", \App\Http\Controllers\Api\BoardController::class)->except(["index"]);
 
     Route::resource("/posts", \App\Http\Controllers\Api\PostController::class)->except(["index", "show"]);
+    Route::resource("/tempPosts", \App\Http\Controllers\Api\TempPostController::class);
+    Route::resource("/comments", \App\Http\Controllers\Api\CommentController::class)->except(["index"]);
+    Route::resource("/likes", \App\Http\Controllers\Api\LikeController::class);
+    Route::resource("/hates", \App\Http\Controllers\Api\HateController::class);
 });
 

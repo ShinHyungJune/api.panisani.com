@@ -22,6 +22,7 @@ class User extends Authenticatable implements HasMedia
     protected $fillable = [
         'ids',
 
+        'nickname',
         'name',
         'sex',
         'birth',
@@ -121,5 +122,25 @@ class User extends Authenticatable implements HasMedia
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function tempPosts()
+    {
+        return $this->hasMany(TempPost::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    public function hates()
+    {
+        return $this->hasMany(Hate::class);
     }
 }

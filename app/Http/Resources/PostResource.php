@@ -28,7 +28,6 @@ class PostResource extends JsonResource
             "description" => $this->description,
 
             "count_view" => $this->count_view,
-            "count_recommend" => $this->count_recommend,
             "count_comment" => $this->count_comment,
             "count_like" => $this->count_like,
             "count_hate" => $this->count_hate,
