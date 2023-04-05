@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CommunityResource;
 use App\Models\Community;
+use App\Models\SearchHistory;
 use Illuminate\Http\Request;
 
 class CommunityController extends ApiController
@@ -22,8 +23,14 @@ class CommunityController extends ApiController
         if($request->order_by)
             $items = $items->orderBy($request->order_by, "desc");
 
-        if($request->word)
-            $items = $items->where("title", "LIKE", "%".$request->word."%");
+        if($request->word) {
+            $items = $items->where("title", "LIKE", "%" . $request->word . "%");
+
+            SearchHistory::create([
+                "user_id" => auth()->user() ? auth()->id() : null,
+                "title" => $request->word
+            ]);
+        }
 
         if($request->user_id)
             $items = $items->where("user_id", $request->user_id);

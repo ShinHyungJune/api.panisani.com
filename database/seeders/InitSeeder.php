@@ -11,6 +11,7 @@ use App\Models\CarFuel;
 use App\Models\CarCreator;
 use App\Models\CarTransmission;
 use App\Models\CarType;
+use App\Models\Comment;
 use App\Models\Community;
 use App\Models\Consulting;
 use App\Models\Faq;
@@ -21,8 +22,10 @@ use App\Models\Post;
 use App\Models\Qna;
 use App\Models\Review;
 use App\Models\Sale;
+use App\Models\SearchRanking;
 use App\Models\ServiceCheck;
 use App\Models\ServiceProtect;
+use App\Models\Special;
 use App\Models\TempPost;
 use App\Models\User;
 use App\Models\Youtube;
@@ -61,6 +64,9 @@ class InitSeeder extends Seeder
         Board::truncate();
         Post::truncate();
         TempPost::truncate();
+        Comment::truncate();
+        Special::truncate();
+        SearchRanking::truncate();
         DB::statement("SET foreign_key_checks=1");
 
         $this->createUsers();
@@ -68,6 +74,9 @@ class InitSeeder extends Seeder
         $this->createCommunities();
         $this->createBoards();
         $this->createPosts();
+        $this->createComments();
+        $this->createSpecials();
+        $this->createSearchRankings();
         // $this->createBanners();
     }
 
@@ -182,4 +191,25 @@ class InitSeeder extends Seeder
         }
     }
 
+    public function createComments()
+    {
+        $posts = Post::get();
+
+        foreach($posts as $post){
+            Comment::factory()->count(rand(1,20))->create([
+                "user_id" => $this->users[rand(0,1)]->id,
+                "post_id" => $post->id,
+            ]);
+        }
+    }
+
+    public function createSpecials()
+    {
+        Special::factory()->count(10)->create();
+    }
+
+    public function createSearchRankings()
+    {
+        SearchRanking::factory()->count(100)->create();
+    }
 }

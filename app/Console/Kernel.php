@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Console\Commands\CalculateBoardCountView;
 use App\Console\Commands\CalculateCommunityCountView;
 use App\Console\Commands\CalculatePostCountView;
+use App\Console\Commands\CalculateSearchRanking;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -19,6 +20,7 @@ class Kernel extends ConsoleKernel
         CalculateCommunityCountView::class,
         CalculateBoardCountView::class,
         CalculatePostCountView::class,
+        CalculateSearchRanking::class,
     ];
 
     /**

@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\Board;
 use App\Models\Comment;
+use App\Models\Hate;
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\User;
@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class LikesTest extends TestCase
+class HatesTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -37,44 +37,43 @@ class LikesTest extends TestCase
     }
 
     /** @test */
-    public function 좋아요를_생성하면_댓글의_좋아요수가_상승한다()
+    public function 싫어요를_생성하면_댓글의_싫어요수가_상승한다()
     {
-        $this->post("/api/likes", $this->form);
+        $this->post("/api/hates", $this->form);
 
         $comment = Comment::find($this->comment->id);
 
-        $this->assertCount(1, Like::get());
-        $this->assertEquals(1, $comment->count_like);
+        $this->assertCount(1, Hate::get());
+        $this->assertEquals(1, $comment->count_hate);
 
     }
 
     /** @test */
-    public function 좋아요를_생성하면_게시글의_좋아요수가_상승한다()
+    public function 싫어요를_생성하면_게시글의_싫어요수가_상승한다()
     {
-        $this->post("/api/likes", $this->form);
+        $this->post("/api/hates", $this->form);
 
         $post = Post::find($this->post->id);
 
-        $this->assertCount(1, Like::get());
-        $this->assertEquals(1, $post->count_like);
+        $this->assertCount(1, Hate::get());
+        $this->assertEquals(1, $post->count_hate);
     }
 
     /** @test */
-    public function 중복좋아요를_할_수_없다()
+    public function 중복싫어요를_할_수_없다()
     {
-        $this->post("/api/likes", $this->form);
+        $this->post("/api/hates", $this->form);
 
         $post = Post::find($this->post->id);
 
-        $this->assertCount(1, Like::get());
-        $this->assertEquals(1, $post->count_like);
+        $this->assertCount(1, Hate::get());
+        $this->assertEquals(1, $post->count_hate);
 
-        $this->post("/api/likes", $this->form);
+        $this->post("/api/hates", $this->form);
 
         $post = Post::find($this->post->id);
 
-        $this->assertCount(0, Like::get());
-        $this->assertEquals(0, $post->count_like);
+        $this->assertCount(0, Hate::get());
+        $this->assertEquals(0, $post->count_hate);
     }
-
 }

@@ -41,6 +41,8 @@ class PostsTest extends TestCase
     /** @test */
     public function 어제기준_조회수순으로_게시글목록을_조회할_수_있다()
     {
+        $this->artisan('calculate:searchRanking');
+
         for($i = 0; $i < 10; $i++){
             Post::factory()->create([
                 "count_view_yesterday" => rand(1,10000)

@@ -8,6 +8,7 @@ use App\Http\Resources\PostResource;
 use App\Models\Board;
 use App\Models\Community;
 use App\Models\Post;
+use App\Models\SearchHistory;
 use App\Models\Visit;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -49,8 +50,14 @@ class PostController extends ApiController
         if($request->user_id)
             $items = $items->where("user_id", $request->user_id);
 
-        if($request->word)
+        if($request->word) {
             $items = $items->where("title", "LIKE", "%{$request->word}%");
+
+            SearchHistory::create([
+                "user_id" => auth()->user() ? auth()->id() : null,
+                "title" => $request->word
+            ]);
+        }
 
         $items = $items->paginate(20);
 

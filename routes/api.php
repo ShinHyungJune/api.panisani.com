@@ -43,6 +43,9 @@ Route::get("/posts", [\App\Http\Controllers\Api\PostController::class, "index"])
 Route::get("/posts/{post}", [\App\Http\Controllers\Api\PostController::class, "show"]);
 Route::get("/comments", [\App\Http\Controllers\Api\CommentController::class, "index"]);
 Route::get("/commentsByBest", [\App\Http\Controllers\Api\CommentController::class, "indexByBest"]);
+Route::get("/specials", [\App\Http\Controllers\Api\SpecialController::class, "index"]);
+Route::get("/searchRankings", [\App\Http\Controllers\Api\SearchRankingController::class, "index"]);
+Route::get("/recommendUsers", [\App\Http\Controllers\Api\RecommendUserController::class, "index"]);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get("/user",function (Request $request) {
@@ -64,5 +67,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource("/comments", \App\Http\Controllers\Api\CommentController::class)->except(["index"]);
     Route::resource("/likes", \App\Http\Controllers\Api\LikeController::class);
     Route::resource("/hates", \App\Http\Controllers\Api\HateController::class);
+    Route::resource("/reports", \App\Http\Controllers\Api\ReportController::class);
 });
 

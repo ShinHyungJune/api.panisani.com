@@ -12,7 +12,7 @@ class Post extends Model
     public static $countHot = 20;
 
     protected $guarded = [
-        "user_id"
+        "id", "user_id"
     ];
 
     public function user()
@@ -53,5 +53,10 @@ class Post extends Model
     public function hates()
     {
         return $this->hasMany(Hate::class);
+    }
+
+    public function reports()
+    {
+        return $this->hasMany(Report::class);
     }
 }
