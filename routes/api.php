@@ -37,6 +37,7 @@ Route::resource("/youtubes", \App\Http\Controllers\Api\YoutubeController::class)
 
 Route::get("/communitiesByChar", [\App\Http\Controllers\Api\CommunityController::class, "indexByChar"]);
 Route::get("/communities", [\App\Http\Controllers\Api\CommunityController::class, "index"]);
+Route::get("/communities/{community}", [\App\Http\Controllers\Api\CommunityController::class, "show"]);
 Route::get("/boards", [\App\Http\Controllers\Api\BoardController::class, "index"]);
 
 Route::get("/posts", [\App\Http\Controllers\Api\PostController::class, "index"]);
@@ -46,6 +47,7 @@ Route::get("/commentsByBest", [\App\Http\Controllers\Api\CommentController::clas
 Route::get("/specials", [\App\Http\Controllers\Api\SpecialController::class, "index"]);
 Route::get("/searchRankings", [\App\Http\Controllers\Api\SearchRankingController::class, "index"]);
 Route::get("/recommendUsers", [\App\Http\Controllers\Api\RecommendUserController::class, "index"]);
+Route::get("/games", [\App\Http\Controllers\Api\GameController::class, "index"]);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get("/user",function (Request $request) {
@@ -56,7 +58,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete("/users", [\App\Http\Controllers\Api\UserController::class, "destroy"]);
     Route::get("/logout", [\App\Http\Controllers\Api\UserController::class, "logout"]);
 
-    Route::resource("/communities", \App\Http\Controllers\Api\CommunityController::class)->except(["index"]);
+    Route::resource("/communities", \App\Http\Controllers\Api\CommunityController::class)->except(["index", "show"]);
     Route::get("/boardsByMe", [\App\Http\Controllers\Api\BoardController::class, "indexByMe"]);
     Route::patch("/boards/up", [\App\Http\Controllers\Api\BoardController::class, "up"]);
     Route::patch("/boards/down", [\App\Http\Controllers\Api\BoardController::class, "down"]);

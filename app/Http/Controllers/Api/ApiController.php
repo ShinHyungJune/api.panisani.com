@@ -44,22 +44,22 @@ class ApiController extends Controller
         return $this->setStatusCode(422)->respond($data);
     }
 
-    public function respondUnauthenticated($message = "unauthenticated")
+    public function respondUnauthenticated($message)
     {
         return $this->setStatusCode(401)->respondWithError($message);
     }
 
-    public function respondNotFound($message = "not found")
+    public function respondNotFound($message)
     {
         return $this->setStatusCode(404)->respondWithError($message);
     }
 
-    public function respondInternalError($message = "internal error")
+    public function respondInternalError($message)
     {
         return $this->setStatusCode(500)->respondWithError($message);
     }
 
-    public function respondImproperCondition($message = "improper condition")
+    public function respondImproperCondition($message)
     {
         return $this->setStatusCode(422)->respondWithError($message);
     }
@@ -69,7 +69,7 @@ class ApiController extends Controller
         return $this->setStatusCode(403)->respondWithError($message);
     }
 
-    public function respondCreated($data = null, $message = "성공적으로 생성되었습니다.")
+    public function respondCreated($data = null, $message = null)
     {
         return $this->setStatusCode(201)->respond([
             'data' => $data,
@@ -77,7 +77,7 @@ class ApiController extends Controller
         ]);
     }
 
-    public function respondUpdated($data = null, $message = "성공적으로 수정되었습니다.")
+    public function respondUpdated($data = null, $message = null)
     {
         return $this->respond([
             'data' => $data,
@@ -85,7 +85,7 @@ class ApiController extends Controller
         ]);
     }
 
-    public function respondDeleted($data = null, $message = "성공적으로 삭제되었습니다.")
+    public function respondDeleted($data = null, $message = null)
     {
         return $this->respond([
             "data" => $data,
@@ -93,7 +93,7 @@ class ApiController extends Controller
         ]);
     }
 
-    public function respondSuccessfully($data = null, $message = "성공적으로 처리되었습니다.")
+    public function respondSuccessfully($data = null, $message = null)
     {
         return $this->respond([
             "data" => $data,

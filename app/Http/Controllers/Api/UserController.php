@@ -27,11 +27,11 @@ class UserController extends ApiController
         }
 
         $data = $request->validate([
-            "ids" => "required|string|max:500",
+            "email" => "required|email|max:500",
             "password" => "required|string|max:500",
         ]);
 
-        if(auth()->attempt($request->only("ids", "password"))) {
+        if(auth()->attempt($request->only("email", "password"))) {
             session()->regenerate();
 
             $token = auth()->user()->createToken("auth");
@@ -43,7 +43,7 @@ class UserController extends ApiController
         }
 
         return throw ValidationException::withMessages([
-            "ids" => [
+            "email" => [
                 __("socialLogin.invalid")
             ]
         ]);
@@ -56,15 +56,13 @@ class UserController extends ApiController
             return $this->storeSocial($request);
 
         $request->validate([
-            "ids" => "required|string|max:500|unique:users",
+            "email" => "required|email|max:500|unique:users",
             "name" => "required|string|max:500",
             "password" => "required|string|max:500|min:8|confirmed",
 
             "sex" => "nullable|string|max:500",
             "birth" => "nullable|string|max:500",
             "contact" => "required|string|max:500|unique:users",
-            "email" => "nullable|email|max:500",
-            "ids_recommend" => "nullable|string|max:500",
 
             "address" => "nullable|string|max:500",
             "address_detail" => "nullable|string|max:500",

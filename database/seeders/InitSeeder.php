@@ -2,29 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\Banner;
-use App\Models\Basic;
 use App\Models\Board;
-use App\Models\Car;
-use App\Models\CarColor;
-use App\Models\CarFuel;
-use App\Models\CarCreator;
-use App\Models\CarTransmission;
-use App\Models\CarType;
 use App\Models\Comment;
 use App\Models\Community;
-use App\Models\Consulting;
 use App\Models\Faq;
+use App\Models\Game;
 use App\Models\Notice;
 use App\Models\PayMethod;
-use App\Models\PointHistory;
 use App\Models\Post;
 use App\Models\Qna;
-use App\Models\Review;
-use App\Models\Sale;
+use App\Models\RecommendUser;
 use App\Models\SearchRanking;
-use App\Models\ServiceCheck;
-use App\Models\ServiceProtect;
 use App\Models\Special;
 use App\Models\TempPost;
 use App\Models\User;
@@ -67,6 +55,8 @@ class InitSeeder extends Seeder
         Comment::truncate();
         Special::truncate();
         SearchRanking::truncate();
+        RecommendUser::truncate();
+        Game::truncate();
         DB::statement("SET foreign_key_checks=1");
 
         $this->createUsers();
@@ -77,7 +67,27 @@ class InitSeeder extends Seeder
         $this->createComments();
         $this->createSpecials();
         $this->createSearchRankings();
+        $this->createRecommendUsers();
+        $this->createGames();
         // $this->createBanners();
+    }
+
+    public function createGames()
+    {
+        $items = Game::factory()->count(8)->create();
+
+        foreach($items as $item){
+            $item->addMedia(public_path($this->thumbnails[rand(0, count($this->thumbnails) - 1)]))->preservingOriginal()->toMediaCollection("img", "s3");
+        }
+    }
+
+    public function createRecommendUsers()
+    {
+        foreach($this->users as $user){
+            RecommendUser::factory()->create([
+                "user_id" => $user->id
+            ]);
+        }
     }
 
     public function createUsers()
@@ -161,7 +171,9 @@ class InitSeeder extends Seeder
         ];
 
         foreach($items as $item){
-            $createdItem = Community::factory()->create($item);
+            $createdItem = Community::factory([
+                "created_at" => Carbon::now()->subDays(rand(0,30)),
+            ])->create($item);
 
             $createdItem->addMedia(public_path($this->thumbnails[rand(0, count($this->thumbnails) - 1)]))->preservingOriginal()->toMediaCollection("img", "s3");
         }
@@ -172,8 +184,9 @@ class InitSeeder extends Seeder
         $communities = Community::get();
 
         foreach($communities as $community){
-            Board::factory()->count(rand(1,20))->create([
+            Board::factory()->count(rand(1,8))->create([
                 "community_id" => $community->id,
+                "created_at" => Carbon::now()->subDays(rand(0,30)),
             ]);
         }
     }
@@ -187,6 +200,7 @@ class InitSeeder extends Seeder
                 "user_id" => $this->users[rand(0,1)]->id,
                 "community_id" => $board->community_id,
                 "board_id" => $board->id,
+                "created_at" => Carbon::now()->subDays(rand(0,30)),
             ]);
         }
     }
@@ -196,7 +210,7 @@ class InitSeeder extends Seeder
         $posts = Post::get();
 
         foreach($posts as $post){
-            Comment::factory()->count(rand(1,20))->create([
+            Comment::factory()->count(rand(5,20))->create([
                 "user_id" => $this->users[rand(0,1)]->id,
                 "post_id" => $post->id,
             ]);

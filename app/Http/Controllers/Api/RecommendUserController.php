@@ -11,7 +11,7 @@ class RecommendUserController extends ApiController
 {
     public function index(Request $request)
     {
-        $items = RecommendUser::latest()->paginate(15);
+        $items = RecommendUser::latest()->paginate(6);
 
         return RecommendUserResource::collection($items);
     }

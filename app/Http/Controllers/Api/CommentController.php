@@ -63,6 +63,12 @@ class CommentController extends ApiController
 
         $comment = auth()->user()->comments()->create($request->all());
 
+        if($request->img)
+            $comment->addMedia($request->img)->toMediaCollection("img", "s3");
+
+        if($request->file)
+            $comment->addMedia($request->file)->toMediaCollection("file", "s3");
+
         return $this->respondSuccessfully(CommentResource::make($comment));
     }
 

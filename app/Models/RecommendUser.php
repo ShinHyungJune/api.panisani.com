@@ -19,4 +19,9 @@ class RecommendUser extends Model
             $model->order = RecommendUser::count();
         });
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -18,6 +18,8 @@ class CommunityController extends ApiController
             "order_by" => "nullable|string|max:500",
         ]);
 
+        $request["take"] = $request->take ?? 20;
+
         $items = Community::where("accept", 1);
 
         if($request->order_by)
@@ -35,7 +37,7 @@ class CommunityController extends ApiController
         if($request->user_id)
             $items = $items->where("user_id", $request->user_id);
 
-        $items = $items->paginate(20);
+        $items = $items->paginate($request->take);
 
         return CommunityResource::collection($items);
     }
@@ -89,16 +91,28 @@ class CommunityController extends ApiController
         return $items;
     }
 
+    public function show(Community $community)
+    {
+        if(!$community->accept)
+            return $this->respondForbidden("아직 게시허용되지 않는 커뮤니티입니다.");
+
+        return $this->respondSuccessfully(CommunityResource::make($community));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
             "title" => "required|string|unique:communities|max:500",
             "description" => "required|string|max:500000",
             "url" => "required|string|max:500",
-            "has_admin" => "nullable|boolean"
+            "has_admin" => "nullable|boolean",
+            "img" => "required|file"
         ]);
 
         $item = auth()->user()->communities()->create($request->except("count_view"));
+
+        if($request->img)
+            $item->addMedia($request->img)->toMediaCollection("img", "s3");
 
         return $this->respondSuccessfully(CommunityResource::make($item));
     }

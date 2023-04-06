@@ -21,8 +21,13 @@ class PostResource extends JsonResource
                 "id" => $this->user->id,
                 "nickname" => $this->user->nickname,
             ] : "",
+            "thumbnail" => $this->thumbnail ?? "/images/no-image.png",
             "community_id" => $this->community_id,
-            "board_id" => $this->board_id,
+
+            "board" => [
+                "id" => $this->board_id,
+                "title" => $this->board->title,
+            ],
 
             "title" => $this->title,
             "description" => $this->description,
@@ -36,6 +41,7 @@ class PostResource extends JsonResource
             "count_view_last_week" => $this->count_view_last_week,
 
             "created_at" => Carbon::make($this->created_at)->format("Y-m-d H:i"),
+            "format_created_at" => Carbon::make($this->created_at)->format("Y.m.d"),
         ];
     }
 }

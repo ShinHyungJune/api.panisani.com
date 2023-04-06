@@ -25,6 +25,8 @@ class PostController extends ApiController
             "word" => "nullable|string|max:500"
         ]);
 
+        $request["take"] = $request->take ?? 20;
+
         $orderBy = $request->order_by ?? "created_at";
 
         // 공개된 게시판 게시글만 노출
@@ -33,12 +35,21 @@ class PostController extends ApiController
         });
 
         if($orderBy == "count_view_last_hour")
-            $items->selectRaw("posts.*, visits.post_id, visits.created_at")->join('visits', 'posts.id', '=', 'visits.post_id')
+            $items = $items->selectRaw("posts.*, visits.post_id, visits.created_at")->join('visits', 'posts.id', '=', 'visits.post_id')
                 ->where('visits.created_at', '>=', Carbon::now()->subHour()->setMinute(0)->setSecond(0))
                 ->groupBy('posts.id')
                 ->orderByRaw('COUNT(*) DESC');
-
-        if($orderBy != "last_hour")
+        elseif($orderBy == "count_view_last_week")
+            $items = $items->selectRaw("posts.*, visits.post_id, visits.created_at")->join('visits', 'posts.id', '=', 'visits.post_id')
+                ->where('visits.created_at', '>=', Carbon::now()->startOfWeek()->startOfDay())
+                ->groupBy('posts.id')
+                ->orderByRaw('COUNT(*) DESC');
+        elseif($orderBy == "count_view_last_month")
+            $items = $items->selectRaw("posts.*, visits.post_id, visits.created_at")->join('visits', 'posts.id', '=', 'visits.post_id')
+                ->where('visits.created_at', '>=', Carbon::now()->startOfMonth()->startOfDay())
+                ->groupBy('posts.id')
+                ->orderByRaw('COUNT(*) DESC');
+        else
             $items = $items->orderBy($orderBy, "desc");
 
         if($request->community_id)
@@ -59,7 +70,7 @@ class PostController extends ApiController
             ]);
         }
 
-        $items = $items->paginate(20);
+        $items = $items->paginate($request->take);
 
         return PostResource::collection($items);
     }

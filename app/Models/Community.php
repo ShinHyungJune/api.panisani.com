@@ -47,49 +47,49 @@ class Community extends Model implements HasMedia
         $items = null;
 
         if($char == "ㄱ")
-            $items = Community::whereBetween("title", ["가", "깋"]);
+            $items = Community::where("accept", 1)->whereBetween("title", ["가", "깋"]);
 
         if($char == "ㄴ")
-            $items = Community::whereBetween("title", ["나", "닣"]);
+            $items = Community::where("accept", 1)->whereBetween("title", ["나", "닣"]);
 
         if($char == "ㄷ")
-            $items = Community::whereBetween("title", ["다", "딯"]);
+            $items = Community::where("accept", 1)->whereBetween("title", ["다", "딯"]);
 
         if($char == "ㄹ")
-            $items = Community::whereBetween("title", ["라", "맇"]);
+            $items = Community::where("accept", 1)->whereBetween("title", ["라", "맇"]);
 
         if($char == "ㅁ")
-            $items = Community::whereBetween("title", ["마", "밓"]);
+            $items = Community::where("accept", 1)->whereBetween("title", ["마", "밓"]);
 
         if($char == "ㅂ")
-            $items = Community::whereBetween("title", ["바", "빟"]);
+            $items = Community::where("accept", 1)->whereBetween("title", ["바", "빟"]);
 
         if($char == "ㅅ")
-            $items = Community::whereBetween("title", ["사", "싷"]);
+            $items = Community::where("accept", 1)->whereBetween("title", ["사", "싷"]);
 
         if($char == "ㅇ")
-            $items = Community::whereBetween("title", ["아", "잏"]);
+            $items = Community::where("accept", 1)->whereBetween("title", ["아", "잏"]);
 
         if($char == "ㅈ")
-            $items = Community::whereBetween("title", ["자", "짛"]);
+            $items = Community::where("accept", 1)->whereBetween("title", ["자", "짛"]);
 
         if($char == "ㅊ")
-            $items = Community::whereBetween("title", ["차", "칳"]);
+            $items = Community::where("accept", 1)->whereBetween("title", ["차", "칳"]);
 
         if($char == "ㅋ")
-            $items = Community::whereBetween("title", ["카", "킿"]);
+            $items = Community::where("accept", 1)->whereBetween("title", ["카", "킿"]);
 
         if($char == "ㅌ")
-            $items = Community::whereBetween("title", ["타", "팋"]);
+            $items = Community::where("accept", 1)->whereBetween("title", ["타", "팋"]);
 
         if($char == "ㅍ")
-            $items = Community::whereBetween("title", ["파", "핗"]);
+            $items = Community::where("accept", 1)->whereBetween("title", ["파", "핗"]);
 
         if($char == "ㅎ")
-            $items = Community::whereBetween("title", ["하", "힣"]);
+            $items = Community::where("accept", 1)->whereBetween("title", ["하", "힣"]);
 
         if(!$items)
-            $items = Community::where("title", "LIKE", "{$char}%");
+            $items = Community::where("accept", 1)->where("title", "LIKE", "{$char}%");
 
         return CommunityResource::collection($items->orderBy("count_view", "desc")->paginate(30));
     }

@@ -21,6 +21,7 @@ class CommentResource extends JsonResource
                 "id" => $this->user->id,
                 "nickname" => $this->user->nickname,
             ],
+            "comments" => CommentResource::collection($this->comments()->paginate(50)),
             "description" => $this->description,
             "count_comment" => $this->comments()->count(),
             "count_like" => $this->count_like,
@@ -28,7 +29,10 @@ class CommentResource extends JsonResource
             "best" => $this->best,
             "isLike" => $this->isLike,
             "isHate" => $this->isHate,
-            "created_at" => Carbon::make($this->created_at)->format("Y-m-d H:i")
+            "img" => $this->img ?? "",
+            "file" => $this->file ?? "",
+            "created_at" => Carbon::make($this->created_at)->format("Y-m-d H:i"),
+            "format_created_at" => Carbon::make($this->created_at)->format("Y.m.d"),
         ];
     }
 }

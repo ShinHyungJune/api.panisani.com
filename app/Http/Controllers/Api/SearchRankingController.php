@@ -11,7 +11,7 @@ class SearchRankingController extends ApiController
 {
     public function index(Request $request)
     {
-        $searchRankings = SearchRanking::orderBy("rank_current", "asc")->take(100);
+        $searchRankings = SearchRanking::orderBy("rank_current", "asc")->take(20)->paginate(20);
 
         return SearchRankingResource::collection($searchRankings);
     }

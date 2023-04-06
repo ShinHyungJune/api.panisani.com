@@ -16,7 +16,7 @@ class CreateSpecialsTable extends Migration
         Schema::create('specials', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("post_id");
-            $table->foreign("post_id")->references("id")->on("users")->onDelete("cascade");
+            $table->foreign("post_id")->references("id")->on("posts")->onDelete("cascade");
             $table->timestamps();
         });
     }
