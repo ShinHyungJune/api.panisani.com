@@ -12,6 +12,7 @@ use App\Models\SearchHistory;
 use App\Models\Visit;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends ApiController
 {
@@ -35,28 +36,41 @@ class PostController extends ApiController
         });
 
         if($orderBy == "count_view_last_hour")
-            $items = $items->selectRaw("posts.*, visits.post_id, visits.created_at")->join('visits', 'posts.id', '=', 'visits.post_id')
-                ->where('visits.created_at', '>=', Carbon::now()->subHour()->setMinute(0)->setSecond(0))
+            $items = $items->select('posts.*', DB::raw('count(visits.id) as visit_count'), "visits.post_id")
+                ->leftJoin('visits', 'posts.id', '=', 'visits.post_id')
+                ->where(function ($query){
+                    $query->where('visits.created_at', '>=', Carbon::now()->subHour())
+                        ->orWhereNull('visits.post_id');
+                })
                 ->groupBy('posts.id')
-                ->orderByRaw('COUNT(*) DESC');
+                ->orderBy('visit_count', 'desc');
         elseif($orderBy == "count_view_last_week")
-            $items = $items->selectRaw("posts.*, visits.post_id, visits.created_at")->join('visits', 'posts.id', '=', 'visits.post_id')
-                ->where('visits.created_at', '>=', Carbon::now()->startOfWeek()->startOfDay())
+            $items = $items->select('posts.*', DB::raw('count(visits.id) as visit_count'), "visits.post_id")
+                ->leftJoin('visits', 'posts.id', '=', 'visits.post_id')
+                ->where(function ($query){
+                    $query->where('visits.created_at', '>=', Carbon::now()->startOfWeek()->startOfDay())
+                        ->orWhereNull('visits.post_id');
+                })
                 ->groupBy('posts.id')
-                ->orderByRaw('COUNT(*) DESC');
+                ->orderBy('visit_count', 'desc');
         elseif($orderBy == "count_view_last_month")
-            $items = $items->selectRaw("posts.*, visits.post_id, visits.created_at")->join('visits', 'posts.id', '=', 'visits.post_id')
-                ->where('visits.created_at', '>=', Carbon::now()->startOfMonth()->startOfDay())
+            $items = $items->select('posts.*', DB::raw('count(visits.id) as visit_count'), "visits.post_id")
+                ->leftJoin('visits', 'posts.id', '=', 'visits.post_id')
+                ->where(function ($query){
+                    $query->where('visits.created_at', '>=', Carbon::now()->startOfMonth()->startOfDay())
+                        ->orWhereNull('visits.post_id');
+                })
                 ->groupBy('posts.id')
-                ->orderByRaw('COUNT(*) DESC');
+                ->orderBy('visit_count', 'desc');
         else
             $items = $items->orderBy($orderBy, "desc");
 
         if($request->community_id)
             $items = $items->where("community_id", $request->community_id);
 
+
         if($request->board_id)
-            $items = $items->where("board_id", $request->board_id);
+            $items = $items->where("posts.board_id", $request->board_id);
 
         if($request->user_id)
             $items = $items->where("user_id", $request->user_id);

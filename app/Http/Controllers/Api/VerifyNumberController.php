@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\KakaoTemplate;
+use App\Mail\VerifyNumberCreated;
 use App\Models\Kakao;
 use App\Models\User;
 use App\Models\VerifyNumber;
@@ -16,21 +17,24 @@ class VerifyNumberController extends ApiController
 {
     public function store(Request $request)
     {
+        $emailValidation = $request->isRegister ? "required|max:255|email|unique:users" : "required|max:255|email";
+
         $request->validate([
-            "contact" => "required|max:255",
+            "email" => $emailValidation,
         ]);
 
         $number = random_int(100000,999999);
 
         $verifyNumber = VerifyNumber::updateOrCreate([
-            "contact" => $request->contact
+            "contact" => $request->email
         ],[
-            "contact" => $request->contact,
+            "contact" => $request->email,
             "number" => $number,
             "verified" => false
         ]);
 
-        // $kakao = new Kakao();
+        /*
+        $kakao = new Kakao();
 
         $sms = new SMS();
 
@@ -40,6 +44,8 @@ class VerifyNumberController extends ApiController
         }catch(\Exception $exception){
             return $this->respondForbidden("잘못된 전화번호 형식입니다.");
         }
+        */
+        Mail::to($request->email)->send(new VerifyNumberCreated($verifyNumber));
 
         // return $this->respondSuccessfully(null, __("response.verifyNumber")["send mail"]);
         return $this->respondSuccessfully("인증번호가 발송되었습니다.");
@@ -50,11 +56,11 @@ class VerifyNumberController extends ApiController
     public function update(Request $request)
     {
         $request->validate([
-            "contact" => "required|max:255",
+            "email" => "required|max:255",
             "number" => "required|max:255",
         ]);
 
-        $verifyNumber = VerifyNumber::where('contact', $request->contact)
+        $verifyNumber = VerifyNumber::where('contact', $request->email)
             ->where('number', $request->number)->first();
 
         if(!$verifyNumber)

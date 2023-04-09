@@ -15,6 +15,6 @@ class PasswordReset extends Model
 
     public function resetUrl()
     {
-        return config("app.url")."/passwordResets/$this->token/edit";
+        return config("app.client_url")."/users/resetPassword?token=".$this->token;
     }
 }

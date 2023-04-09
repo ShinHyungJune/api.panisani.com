@@ -57,51 +57,28 @@ class UserController extends ApiController
 
         $request->validate([
             "email" => "required|email|max:500|unique:users",
-            "name" => "required|string|max:500",
+            "nickname" => "required|unique:users|string|max:500",
             "password" => "required|string|max:500|min:8|confirmed",
-
-            "sex" => "nullable|string|max:500",
-            "birth" => "nullable|string|max:500",
-            "contact" => "required|string|max:500|unique:users",
-
-            "address" => "nullable|string|max:500",
-            "address_detail" => "nullable|string|max:500",
-            "address_zipcode" => "nullable|string|max:500",
+            "birth" => "required|string|max:500",
+            "img" => "required|file|max:20480", // 20MB
         ]);
 
-        $recommendedUser = null;
-
-        $verifyNumber = VerifyNumber::where('contact', $request->contact)
+        $verifyNumber = VerifyNumber::where('contact', $request->email)
             ->where('verified', true)->first();
 
         if(!$verifyNumber)
             return throw ValidationException::withMessages([
-                "contact" => [
-                    "인증된 전화번호만 사용할 수 있습니다."
+                "email" => [
+                    "인증된 이메일만 사용할 수 있습니다."
                 ]
             ]);
-
-        if($request->ids_recommend) {
-            $recommendedUser = User::where("ids", $request->ids_recommend)->first();
-
-            if(!$recommendedUser)
-                return throw ValidationException::withMessages([
-                    "ids_recommend" => [
-                        "존재하지 않는 추천인입니다."
-                    ]
-                ]);
-        }
 
         $user = User::create(array_merge($request->all(), [
             "password" => Hash::make($request->password)
         ]));
 
-        if($recommendedUser){
-            $recommendedUser->changePoint(PointHistoryType::RECOMMEND);
-            $user->changePoint(PointHistoryType::RECOMMEND);
-        }
-
-        $user->changePoint(PointHistoryType::REGISTER);
+        if($request->img)
+            $user->addMedia($request->img)->toMediaCollection("img", "s3");
 
         $verifyNumber->delete();
 
@@ -111,52 +88,30 @@ class UserController extends ApiController
     public function storeSocial(Request $request)
     {
         $request->validate([
-            "name" => "required|string|max:500",
-            "sex" => "nullable|string|max:500",
-            "birth" => "nullable|string|max:500",
-            "contact" => "required|string|max:500|unique:users",
-            "email" => "nullable|email|max:500",
-            "ids_recommend" => "nullable|string|max:500",
-
-            "address" => "nullable|string|max:500",
-            "address_detail" => "nullable|string|max:500",
-            "address_zipcode" => "nullable|string|max:500",
+            "img" => "nullable|file|max:20480", // 20MB
+            "email" => "required|email|max:500|unique:users",
+            "nickname" => "required|unique:users|string|max:500",
+            "password" => "required|string|max:500|min:8|confirmed",
+            "birth" => "required|string|max:500",
 
             "social_id" => "required|string|max:50000",
             "social_platform" => "required|string|max:50000",
         ]);
 
-        $recommendedUser = null;
-
-        $verifyNumber = VerifyNumber::where('contact', $request->contact)
+        $verifyNumber = VerifyNumber::where('contact', $request->email)
             ->where('verified', true)->first();
 
         if(!$verifyNumber)
             return throw ValidationException::withMessages([
-                "contact" => [
-                    "인증된 전화번호만 사용할 수 있습니다."
+                "email" => [
+                    "인증된 이메일만 사용할 수 있습니다."
                 ]
             ]);
 
-        if($request->ids_recommend) {
-            $recommendedUser = User::where("ids", $request->ids_recommend)->first();
-
-            if(!$recommendedUser)
-                return throw ValidationException::withMessages([
-                    "ids_recommend" => [
-                        "존재하지 않는 추천인입니다."
-                    ]
-                ]);
-        }
-
         $user = User::create($request->all());
 
-        if($recommendedUser){
-            $recommendedUser->changePoint(PointHistoryType::RECOMMEND);
-            $user->changePoint(PointHistoryType::RECOMMEND);
-        }
-
-        $user->changePoint(PointHistoryType::REGISTER);
+        if($request->img)
+            $user->addMedia($request->img)->toMediaCollection("img", "s3");
 
         $verifyNumber->delete();
 
@@ -177,9 +132,9 @@ class UserController extends ApiController
 
         if(!$user) {
             // 소셜로그인에서 연락처 받을 시 해당 연락처 인증완료처리
-            if($socialUser->contact){
+            if($socialUser->email){
                 VerifyNumber::create([
-                    "contact" => $socialUser->contact,
+                    "contact" => $socialUser->email,
                     "number"=> "1234",
                     "verified" => true
                 ]);
@@ -203,15 +158,17 @@ class UserController extends ApiController
     public function update(Request $request)
     {
         $request->validate([
-            "sex" => "nullable|string|max:500",
-            "email" => "nullable|email|max:500",
-
-            "address" => "nullable|string|max:500",
-            "address_detail" => "nullable|string|max:500",
-            "address_zipcode" => "nullable|string|max:500",
+            "img" => "nullable|file|max:20480", // 20MB
+            // "email" => "required|email|max:500|unique:users,email".auth()->id(),
+            "nickname" => "required|string|max:500|unique:users,nickname,".auth()->id(),
+            "password" => "required|string|max:500|min:8|confirmed",
+            "birth" => "required|string|max:500",
         ]);
 
-        auth()->user()->update($request->except(["password", "ids", "contact"]));
+        auth()->user()->update($request->except(["password"]));
+
+        if($request->img)
+            auth()->user()->addMedia($request->img)->toMediaCollection("img", "s3");
 
         return $this->respondSuccessfully();
     }

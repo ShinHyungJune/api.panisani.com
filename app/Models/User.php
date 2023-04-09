@@ -20,22 +20,9 @@ class User extends Authenticatable implements HasMedia
     use SoftDeletes;
 
     protected $fillable = [
-        'ids',
-
-        'nickname',
-        'name',
-        'sex',
-        'birth',
-        'contact',
         'email',
-
-        'address',
-        'address_detail',
-        'address_zipcode',
-
-        'agree_marketing',
-
-        'point',
+        'nickname',
+        'birth',
 
         'password',
         "verified_at",

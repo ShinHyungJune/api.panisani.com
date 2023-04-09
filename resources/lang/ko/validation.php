@@ -212,6 +212,7 @@ return [
         "accept_accident" => "구매가능한 사고수준",
         "budget" => "예산",
         "urls" => "URL 목록",
+        "nickname" => "닉네임"
     ],
 
 ];

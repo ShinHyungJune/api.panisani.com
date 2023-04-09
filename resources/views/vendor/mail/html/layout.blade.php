@@ -5,6 +5,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-{{ $slot }}
+<div style="width:677px;">
+    <div style="padding:32px 56px;">
+        {{ $header ?? '' }}
+
+        {{ $slot }}
+
+        {{ $footer ?? '' }}
+    </div>
+</div>
 </body>
 </html>

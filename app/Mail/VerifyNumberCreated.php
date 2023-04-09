@@ -3,27 +3,28 @@
 namespace App\Mail;
 
 use App\Models\AfterService;
-use App\Models\Ask;
 use App\Models\Order;
+use App\Models\Qna;
+use App\Models\VerifyNumber;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class AskCreated extends Mailable implements ShouldQueue
+class VerifyNumberCreated extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    protected $ask;
+    protected $verifyNumber;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Ask $ask)
+    public function __construct(VerifyNumber $verifyNumber)
     {
-        $this->ask = $ask;
+        $this->verifyNumber = $verifyNumber;
     }
 
     /**
@@ -33,8 +34,8 @@ class AskCreated extends Mailable implements ShouldQueue
      */
     public function build()
     {
-        return $this->markdown('emails.asks.created')
-            ->subject("[".config("app.name")."] 빌라위탁 문의가 접수되었습니다.")
-            ->with(["item" => $this->ask]);
+        return $this->markdown('emails.verifyNumbers.created')
+            ->subject("[".config("app.name")."] 인증번호가 도착하였습니다.")
+            ->with(["item" => $this->verifyNumber]);
     }
 }

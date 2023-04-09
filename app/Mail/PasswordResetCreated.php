@@ -13,8 +13,6 @@ class PasswordResetCreated extends Mailable
 {
     use Queueable, SerializesModels;
 
-    protected $receiver;
-
     protected $passwordReset;
 
     /**
@@ -22,10 +20,8 @@ class PasswordResetCreated extends Mailable
      *
      * @return void
      */
-    public function __construct(User $receiver, PasswordReset $passwordReset)
+    public function __construct(PasswordReset $passwordReset)
     {
-        $this->receiver = $receiver;
-
         $this->passwordReset = $passwordReset;
     }
 
@@ -38,6 +34,6 @@ class PasswordResetCreated extends Mailable
     {
         return $this->markdown('emails.passwordResets.created')
             ->subject("[".config("app.name")."] ".__("socialLogin.passwordReset")["send"])
-            ->with(["receiver" => $this->receiver, "passwordReset" => $this->passwordReset]);
+            ->with(["passwordReset" => $this->passwordReset]);
     }
 }

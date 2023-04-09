@@ -54,7 +54,7 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
-    'client_url' => env('APP_CLIENT_URL', 'https://whatpick.com'),
+    'client_url' => env('APP_CLIENT_URL', 'http://localhost:3000'),
 
     'asset_url' => env('ASSET_URL', null),
 

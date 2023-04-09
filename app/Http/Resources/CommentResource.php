@@ -20,6 +20,7 @@ class CommentResource extends JsonResource
             "user" => [
                 "id" => $this->user->id,
                 "nickname" => $this->user->nickname,
+                "img" => $this->user->img ?? ""
             ],
             "comments" => CommentResource::collection($this->comments()->paginate(50)),
             "description" => $this->description,

@@ -1,6 +1,3 @@
 <header class="header">
-    <a href="{{ config("app.url") }}" style="color:#fff;">
-        <!-- <img src="/img/logo.png" alt=""> -->
-        {{config("app.name")}}
-    </a>
+    <img src="{{asset("img_mail_logo.png")}}" width="100%">
 </header>

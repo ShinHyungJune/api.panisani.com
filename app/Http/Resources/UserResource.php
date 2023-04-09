@@ -17,19 +17,12 @@ class UserResource extends JsonResource
     {
         return [
             "id" => $this->id,
-            "admin" => $this->admin ? 1 : 0,
             "social_platform" => $this->getFormatSocial(),
-            "ids" => $this->ids ?? "",
-            "name" => $this->name ?? "",
-            "sex" => $this->sex ?? "",
-            "birth" => $this->birth ,
-            "contact" => $this->contact ?? "",
+            "img" => $this->img ?? "",
+
+            "nickname" => $this->nickname ?? "",
+            "birth" => $this->birth ?? "",
             "email" => $this->email ?? "",
-            "ids_recommend" => $this->ids_recommend ?? "",
-            "address" => $this->address ?? "",
-            "address_detail" => $this->address_detail ?? "",
-            "address_zipcode" => $this->address_zipcode ?? "",
-            "point" => $this->point ?? "",
 
             "created_at" => Carbon::make($this->created_at)->format("Y-m-d"),
             "updated_at" => Carbon::make($this->updated_at)->format("Y-m-d H:i"),
