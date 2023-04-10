@@ -49,6 +49,11 @@ class UserController extends ApiController
         ]);
     }
 
+    public function show(User $user)
+    {
+        return $this->respondSuccessfully(UserResource::make($user));
+    }
+
     public function store(Request $request)
     {
         // 소셜가입
@@ -161,8 +166,9 @@ class UserController extends ApiController
             "img" => "nullable|file|max:20480", // 20MB
             // "email" => "required|email|max:500|unique:users,email".auth()->id(),
             "nickname" => "required|string|max:500|unique:users,nickname,".auth()->id(),
-            "password" => "required|string|max:500|min:8|confirmed",
+            "password" => "nullable|string|max:500|min:8|confirmed",
             "birth" => "required|string|max:500",
+            "description" => "nullable|string|max:500",
         ]);
 
         auth()->user()->update($request->except(["password"]));
@@ -170,13 +176,14 @@ class UserController extends ApiController
         if($request->img)
             auth()->user()->addMedia($request->img)->toMediaCollection("img", "s3");
 
-        return $this->respondSuccessfully();
+        return $this->respondSuccessfully(UserResource::make(auth()->user()));
     }
 
     public function destroy(Request $request)
     {
         $request->validate([
-            "password" => "required|string|max:50000"
+            "password" => "required|string|max:50000",
+            "reason_leave_out" => "nullable|string|max:50000",
         ]);
 
         if(!Hash::check($request->password, auth()->user()->password)){
@@ -186,6 +193,10 @@ class UserController extends ApiController
                 ]
             ]);
         };
+
+        auth()->user()->update([
+            "reason_leave_out" => $request->reason_leave_out
+        ]);
 
         auth()->user()->delete();
 

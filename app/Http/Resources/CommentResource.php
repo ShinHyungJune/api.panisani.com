@@ -22,6 +22,9 @@ class CommentResource extends JsonResource
                 "nickname" => $this->user->nickname,
                 "img" => $this->user->img ?? ""
             ],
+            "post" => [
+                "id" => $this->post->id
+            ],
             "comments" => CommentResource::collection($this->comments()->paginate(50)),
             "description" => $this->description,
             "count_comment" => $this->comments()->count(),

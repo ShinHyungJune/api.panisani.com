@@ -23,6 +23,7 @@ class User extends Authenticatable implements HasMedia
         'email',
         'nickname',
         'birth',
+        "description",
 
         'password',
         "verified_at",
@@ -71,6 +72,17 @@ class User extends Authenticatable implements HasMedia
         }
 
         return null;
+    }
+
+    public function getIsSubscriptionAttribute()
+    {
+        if(!auth()->user())
+            return 0;
+
+        if(auth()->user()->giveSubscriptions()->where("target_user_id", $this->id)->first())
+            return 1;
+
+        return 0;
     }
 
     public function getFormatSocial()
@@ -129,5 +141,20 @@ class User extends Authenticatable implements HasMedia
     public function hates()
     {
         return $this->hasMany(Hate::class);
+    }
+
+    public function giveSubscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function receiveSubscriptions()
+    {
+        return $this->hasMany(Subscription::class, "target_user_id");
+    }
+
+    public function reports() // 신고 받은 이력(신고한 이력 아님)
+    {
+        return $this->hasMany(Report::class, "target_user_id");
     }
 }

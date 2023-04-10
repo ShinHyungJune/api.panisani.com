@@ -25,9 +25,7 @@ class CommentController extends ApiController
             $comments = $comments->where("post_id", $request->post_id);
 
         if($request->word)
-            $comments = $comments->whereHas("user", function($query) use($request){
-                $query->where("nickname", "LIKE", "%{$request->word}%");
-            });
+            $comments = $comments->where("description", "LIKE", "%{$request->word}%");
 
         $comments = $comments->orderBy($orderBy, "desc")->paginate(10);
 

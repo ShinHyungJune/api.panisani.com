@@ -20,4 +20,9 @@ class Report extends Model
     {
         return $this->belongsTo(Post::class);
     }
+
+    public function targetUser()
+    {
+        return $this->belongsTo(User::class, "target_user_id");
+    }
 }

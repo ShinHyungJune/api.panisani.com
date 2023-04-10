@@ -24,6 +24,9 @@ class CreateReportsTable extends Migration
             $table->unsignedBigInteger("comment_id")->nullable();
             $table->foreign("comment_id")->references("id")->on("comments")->onDelete("cascade");
 
+            $table->unsignedBigInteger("target_user_id")->nullable();
+            $table->foreign("target_user_id")->references("id")->on("users")->onDelete("cascade");
+
             $table->text("reason")->nullable();
 
             $table->timestamps();

@@ -48,6 +48,8 @@ Route::get("/specials", [\App\Http\Controllers\Api\SpecialController::class, "in
 Route::get("/searchRankings", [\App\Http\Controllers\Api\SearchRankingController::class, "index"]);
 Route::get("/recommendUsers", [\App\Http\Controllers\Api\RecommendUserController::class, "index"]);
 Route::get("/games", [\App\Http\Controllers\Api\GameController::class, "index"]);
+Route::get("/subscriptions", [\App\Http\Controllers\Api\SubscriptionController::class, "index"]);
+Route::get("/users/{user}", [\App\Http\Controllers\Api\UserController::class, "show"]);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get("/user",function (Request $request) {
@@ -70,5 +72,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource("/likes", \App\Http\Controllers\Api\LikeController::class);
     Route::resource("/hates", \App\Http\Controllers\Api\HateController::class);
     Route::resource("/reports", \App\Http\Controllers\Api\ReportController::class);
+    Route::post("/subscriptions", [\App\Http\Controllers\Api\SubscriptionController::class, "store"]);
 });
 

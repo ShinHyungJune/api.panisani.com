@@ -21,8 +21,13 @@ class UserResource extends JsonResource
             "img" => $this->img ?? "",
 
             "nickname" => $this->nickname ?? "",
+            "description" => $this->description ?? "",
             "birth" => $this->birth ?? "",
             "email" => $this->email ?? "",
+
+            "count_post" => $this->posts()->count(),
+            "count_subscription" => $this->receiveSubscriptions()->count(),
+            "is_subscription" => $this->isSubscription,
 
             "created_at" => Carbon::make($this->created_at)->format("Y-m-d"),
             "updated_at" => Carbon::make($this->updated_at)->format("Y-m-d H:i"),

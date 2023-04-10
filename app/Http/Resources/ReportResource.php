@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ReportResource extends JsonResource
@@ -18,7 +19,10 @@ class ReportResource extends JsonResource
             "id" => $this->id,
             "user" => $this->user,
             "post" => $this->post,
-            "reason" => $this->reason
+            "comment" => $this->comment,
+            "targetUser" => $this->targetUser,
+            "reason" => $this->reason,
+            "created_at" => Carbon::make($this->created_at)->format("Y-m-d H:i")
         ];
     }
 }
