@@ -6,6 +6,7 @@ use App\Models\Community;
 use App\Models\User;
 use App\Models\Visit;
 use Carbon\Carbon;
+use Faker\Core\File;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -28,6 +29,7 @@ class CommunitiesTest extends TestCase
             "title" => "테스트",
             "description" => "테스트",
             "url" => "https://naver.com",
+            "img" => \Illuminate\Http\Testing\File::create("file.jpg", 100)
         ];
     }
 

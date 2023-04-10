@@ -35,6 +35,11 @@ class InitSeeder extends Seeder
         "imgs/game7.jpg",
     ];
 
+    protected $avatars = [
+        "imgs/avatar1.png",
+        "imgs/avatar2.png",
+    ];
+
     protected $user;
     protected $users = [];
 
@@ -103,6 +108,10 @@ class InitSeeder extends Seeder
             "email" => "ssa4141@naver.com",
             "password" => Hash::make("ssa4141@naver.com")
         ]);
+
+        $this->users[0]->addMedia(public_path($this->avatars[0]))->preservingOriginal()->toMediaCollection("img", "s3");
+        $this->users[1]->addMedia(public_path($this->avatars[1]))->preservingOriginal()->toMediaCollection("img", "s3");
+
     }
 
     public function createYoutubes()

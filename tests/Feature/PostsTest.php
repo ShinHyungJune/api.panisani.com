@@ -67,10 +67,15 @@ class PostsTest extends TestCase
     public function 저번주기준_조회수순으로_게시글_목록을_조회할_수_있다()
     {
         for($i = 0; $i < 10; $i++){
-            Post::factory()->create([
-                "count_view_last_week" => rand(1,10000)
+            $post = Post::factory()->create();
+
+            Visit::factory()->count(rand(0,100))->create([
+                "post_id" => $post->id,
+                "created_at"=> Carbon::now()->subWeek()
             ]);
         }
+
+        $this->artisan('calculate:postCountView');
 
         $items = $this->json("get", "/api/posts", [
             "order_by" => "count_view_last_week"
