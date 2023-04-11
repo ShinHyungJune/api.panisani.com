@@ -101,7 +101,7 @@ class Community extends Model implements HasMedia
 
     public function alreadyMaxOpenBoard()
     {
-        return $this->boards()->count() >= self::$maxOpenBoardCount;
+        return $this->boards()->where("open", 1)->count() >= self::$maxOpenBoardCount;
     }
 
     public function posts()

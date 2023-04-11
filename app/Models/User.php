@@ -157,4 +157,9 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasMany(Report::class, "target_user_id");
     }
+
+    public function scraps()
+    {
+        return $this->hasMany(Scrap::class);
+    }
 }

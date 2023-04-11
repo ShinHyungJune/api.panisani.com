@@ -63,8 +63,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::resource("/communities", \App\Http\Controllers\Api\CommunityController::class)->except(["index", "show"]);
     Route::get("/boardsByMe", [\App\Http\Controllers\Api\BoardController::class, "indexByMe"]);
-    Route::patch("/boards/up", [\App\Http\Controllers\Api\BoardController::class, "up"]);
-    Route::patch("/boards/down", [\App\Http\Controllers\Api\BoardController::class, "down"]);
+    Route::patch("/boards/{board}/up", [\App\Http\Controllers\Api\BoardController::class, "up"]);
+    Route::patch("/boards/{board}/down", [\App\Http\Controllers\Api\BoardController::class, "down"]);
     Route::resource("/boards", \App\Http\Controllers\Api\BoardController::class)->except(["index"]);
 
     Route::resource("/posts", \App\Http\Controllers\Api\PostController::class)->except(["index", "show"]);
@@ -74,5 +74,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource("/hates", \App\Http\Controllers\Api\HateController::class);
     Route::resource("/reports", \App\Http\Controllers\Api\ReportController::class);
     Route::post("/subscriptions", [\App\Http\Controllers\Api\SubscriptionController::class, "store"]);
+
+    Route::get("/scraps", [\App\Http\Controllers\Api\ScrapController::class, "index"]);
+    Route::post("/scraps", [\App\Http\Controllers\Api\ScrapController::class, "store"]);
+
 });
 

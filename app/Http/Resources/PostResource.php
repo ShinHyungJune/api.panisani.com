@@ -20,6 +20,7 @@ class PostResource extends JsonResource
             "user" => $this->user ? [
                 "id" => $this->user->id,
                 "nickname" => $this->user->nickname,
+                "img" => $this->user->img ?? ""
             ] : "",
             "thumbnail" => $this->thumbnail ?? "/images/no-image.png",
             "community_id" => $this->community_id,

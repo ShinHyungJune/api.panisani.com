@@ -29,8 +29,9 @@ class BoardController extends ApiController
 
         $align = $orderBy == "order" ? "asc" : "desc";
 
-        $boards = Board::where("open", 1)->orderBy($orderBy, $align);
+        $boards = $request->mine ?  new Board() : Board::where("open", 1);
 
+        $boards = $boards->orderBy($orderBy, $align);
         if($request->community_id)
             $boards = $boards->where("community_id", $request->community_id);
 
@@ -89,34 +90,35 @@ class BoardController extends ApiController
 
         $board->update($request->except(["community_id", "count_view"]));
 
-        return $this->respondSuccessfully();
+        return $this->respondSuccessfully(BoardResource::make($board));
     }
 
-    public function up(Board $item)
+    public function up(Board $board)
     {
-        $prevOrder = $item->order;
-        $targetItem = Board::orderBy("order", "asc")->where("order", ">=", $item->order)->first();
+        $prevOrder = $board->order;
+        $targetItem = $board->community->boards()->orderBy("order", "desc")->where("id", "!=", $board->id)->where("order", "<=", $board->order)->first();
 
         if($targetItem) {
-            $changeOrder = $targetItem->order == $item->order ? $item->order + 1 : $targetItem->order;
-            $item->update(["order" => $changeOrder]);
+            $changeOrder = $targetItem->order == $board->order ? $board->order - 1 : $targetItem->order;
+            $board->update(["order" => $changeOrder]);
             $targetItem->update(["order" => $prevOrder]);
         }
 
         return $this->respondSuccessfully();
     }
 
-    public function down(Board $item)
+    public function down(Board $board)
     {
-        $prevOrder = $item->order;
-        $targetItem = Board::orderBy("order", "desc")->where("order", "<=", $item->order)->first();
+        $prevOrder = $board->order;
+        $targetItem = $board->community->boards()->orderBy("order", "asc")->where("id", "!=", $board->id)->where("order", ">=", $board->order)->first();
 
         if($targetItem) {
-            $changeOrder = $targetItem->order == $item->order ? $item->order - 1 : $targetItem->order;
-            $item->update(["order" => $changeOrder]);
+            $changeOrder = $targetItem->order == $board->order ? $board->order + 1 : $targetItem->order;
+            $board->update(["order" => $changeOrder]);
             $targetItem->update(["order" => $prevOrder]);
         }
 
         return $this->respondSuccessfully();
+
     }
 }
