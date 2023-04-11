@@ -165,9 +165,10 @@ class UserController extends ApiController
         $request->validate([
             "img" => "nullable|file|max:20480", // 20MB
             // "email" => "required|email|max:500|unique:users,email".auth()->id(),
-            "nickname" => "required|string|max:500|unique:users,nickname,".auth()->id(),
-            "password" => "nullable|string|max:500|min:8|confirmed",
-            "birth" => "required|string|max:500",
+            "nickname" => "nullable|string|max:500|unique:users,nickname,".auth()->id(),
+            "password" => "nullable|string|max:500|min:8",
+            "password_new" => "nullable|string|max:500|min:8|confirmed",
+            "birth" => "nullable|string|max:500",
             "description" => "nullable|string|max:500",
         ]);
 
@@ -175,6 +176,22 @@ class UserController extends ApiController
 
         if($request->img)
             auth()->user()->addMedia($request->img)->toMediaCollection("img", "s3");
+
+        if($request->password){
+            if(!Hash::check($request->password, auth()->user()->password)){
+                return throw ValidationException::withMessages([
+                    "password" => [
+                        "틀린 비밀번호입니다."
+                    ]
+                ]);
+            };
+
+            $request->validate([
+                "password_new" => "string|confirmed|min:8"
+            ]);
+
+            auth()->user()->update(["password" => Hash::make($request->password_new)]);
+        }
 
         return $this->respondSuccessfully(UserResource::make(auth()->user()));
     }

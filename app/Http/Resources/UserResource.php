@@ -22,7 +22,7 @@ class UserResource extends JsonResource
 
             "nickname" => $this->nickname ?? "",
             "description" => $this->description ?? "",
-            "birth" => $this->birth ?? "",
+            "birth" => $this->birth ? Carbon::make($this->birth)->format("Y.m.d") : "",
             "email" => $this->email ?? "",
 
             "count_post" => $this->posts()->count(),

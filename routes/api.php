@@ -56,6 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user() ? \App\Http\Resources\UserResource::make($request->user()) : "";
     });
 
+    Route::post("/logout", [\App\Http\Controllers\Api\UserController::class, "logout"]);
     Route::patch("/users", [\App\Http\Controllers\Api\UserController::class, "update"]);
     Route::delete("/users", [\App\Http\Controllers\Api\UserController::class, "destroy"]);
     Route::get("/logout", [\App\Http\Controllers\Api\UserController::class, "logout"]);
