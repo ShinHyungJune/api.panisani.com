@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class QnaResource extends JsonResource
+class SuggestionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

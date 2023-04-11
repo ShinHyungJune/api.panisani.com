@@ -162,4 +162,14 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasMany(Scrap::class);
     }
+
+    public function qnas()
+    {
+        return $this->hasMany(Qna::class);
+    }
+
+    public function suggestions()
+    {
+        return $this->hasMany(Suggestion::class);
+    }
 }

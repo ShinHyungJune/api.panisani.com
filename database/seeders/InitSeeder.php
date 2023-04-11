@@ -62,6 +62,7 @@ class InitSeeder extends Seeder
         SearchRanking::truncate();
         RecommendUser::truncate();
         Game::truncate();
+        Notice::truncate();
         DB::statement("SET foreign_key_checks=1");
 
         $this->createUsers();
@@ -74,7 +75,13 @@ class InitSeeder extends Seeder
         $this->createSearchRankings();
         $this->createRecommendUsers();
         $this->createGames();
+        $this->createNotices();
         // $this->createBanners();
+    }
+
+    public function createNotices()
+    {
+        $items = Notice::factory()->count(25)->create();
     }
 
     public function createGames()

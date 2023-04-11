@@ -3,17 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\QnaResource;
-use App\Models\Qna;
+use App\Http\Resources\SuggestionResource;
 use Illuminate\Http\Request;
 
-class QnaController extends ApiController
+class SuggestionController extends ApiController
 {
     public function index(Request $request)
     {
-        $qnas = auth()->user()->qnas()->latest()->paginate(15);
+        $suggestions = auth()->user()->suggestions()->latest()->paginate(15);
 
-        return QnaResource::collection($qnas);
+        return SuggestionResource::collection($suggestions);
     }
 
     public function store(Request $request)
@@ -22,16 +21,16 @@ class QnaController extends ApiController
             "description" => "required|string|max:500000"
         ]);
 
-        $qna = auth()->user()->qnas()->create([
+        $suggestion = auth()->user()->suggestions()->create([
             "description" => $request->description,
         ]);
 
         if(is_array($request->file('files'))){
             foreach($request->file("files") as $file){
-                $qna->addMedia($file)->toMediaCollection("files", "s3");
+                $suggestion->addMedia($file)->toMediaCollection("files", "s3");
             }
         }
 
-        return $this->respondSuccessfully(QnaResource::make($qna));
+        return $this->respondSuccessfully(SuggestionResource::make($suggestion));
     }
 }

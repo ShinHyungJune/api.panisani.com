@@ -50,6 +50,7 @@ Route::get("/recommendUsers", [\App\Http\Controllers\Api\RecommendUserController
 Route::get("/games", [\App\Http\Controllers\Api\GameController::class, "index"]);
 Route::get("/subscriptions", [\App\Http\Controllers\Api\SubscriptionController::class, "index"]);
 Route::get("/users/{user}", [\App\Http\Controllers\Api\UserController::class, "show"]);
+Route::get("/notices", [\App\Http\Controllers\Api\NoticeController::class, "index"]);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get("/user",function (Request $request) {
@@ -77,6 +78,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get("/scraps", [\App\Http\Controllers\Api\ScrapController::class, "index"]);
     Route::post("/scraps", [\App\Http\Controllers\Api\ScrapController::class, "store"]);
+
+    Route::resource("/qnas", \App\Http\Controllers\Api\QnaController::class);
+    Route::resource("/suggestions", \App\Http\Controllers\Api\SuggestionController::class);
 
 });
 
