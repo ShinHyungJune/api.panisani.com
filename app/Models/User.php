@@ -88,24 +88,24 @@ class User extends Authenticatable implements HasMedia
     public function getFormatSocial()
     {
         if($this->social_platform === "kakaoCustom")
-            return "카카오";
+            return "kakao";
 
         if($this->social_platform === "kakao")
-            return "카카오";
+            return "kakao";
 
         if($this->social_platform === "naverCustom")
-            return "네이버";
+            return "naver";
 
         if($this->social_platform === "naver")
-            return "네이버";
+            return "naver";
 
         if($this->social_platform === "google")
-            return "구글";
+            return "google";
 
         if($this->social_platform === "facebook")
-            return "페이스북";
+            return "facebook";
 
-        return "일반";
+        return "";
     }
 
     public function communities()
