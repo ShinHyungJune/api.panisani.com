@@ -19,6 +19,9 @@ class VerifyNumberController extends ApiController
     {
         $emailValidation = $request->isRegister ? "required|max:255|email|unique:users" : "required|max:255|email";
 
+        if($request->findId && !User::where("email" , $request->email)->first())
+            return $this->respondForbidden("존재하지 않는 계정입니다.");
+
         $request->validate([
             "email" => $emailValidation,
         ]);

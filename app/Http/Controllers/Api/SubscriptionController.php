@@ -43,6 +43,9 @@ class SubscriptionController extends ApiController
         if(!$targetUser)
             return $this->respondForbidden("존재하지 않거나 탈퇴한 회원입니다.");
 
+        if($targetUser->id == auth()->id())
+            return $this->respondForbidden("자기 자신은 구독할 수 없습니다.");
+
         $prevSubscription = auth()->user()->giveSubscriptions()->where("target_user_id", $targetUser->id)->first();
 
         $prevSubscription ? $prevSubscription->delete() : auth()->user()->giveSubscriptions()->create([
