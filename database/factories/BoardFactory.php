@@ -14,7 +14,7 @@ class BoardFactory extends Factory
      */
     public function definition()
     {
-        $community = Community::factory()->create();
+        $community = Community::first() ?? Community::factory()->create();
 
         return [
             "user_id" => $community->user_id,

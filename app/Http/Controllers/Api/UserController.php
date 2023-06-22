@@ -64,7 +64,7 @@ class UserController extends ApiController
             "email" => "required|email|max:500|unique:users",
             "nickname" => "required|unique:users|string|max:500",
             "password" => "required|string|max:500|min:8|confirmed",
-            "birth" => "required|string|max:500",
+            "birth" => "required|date|before_or_equal:".now()->format('Y-m-d'),
             "img" => "required|file|max:20480", // 20MB
         ]);
 

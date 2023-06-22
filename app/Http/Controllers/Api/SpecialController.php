@@ -11,7 +11,7 @@ class SpecialController extends ApiController
 {
     public function index()
     {
-        $items = Special::latest()->paginate(20);
+        $items = Special::latest()->paginate(12);
 
         return SpecialResource::collection($items);
     }

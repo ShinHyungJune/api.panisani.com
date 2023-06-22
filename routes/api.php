@@ -21,7 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 */
 
 
-Route::post("/imageUpload", [\App\Http\Controllers\Api\ImageController::class, "store"]);
 Route::post("/visits", [\App\Http\Controllers\Api\VisitController::class, "store"]);
 Route::post("/login", [\App\Http\Controllers\Api\UserController::class, "login"]);
 Route::post("/users", [\App\Http\Controllers\Api\UserController::class, "store"]);
@@ -53,6 +52,7 @@ Route::get("/users/{user}", [\App\Http\Controllers\Api\UserController::class, "s
 Route::get("/notices", [\App\Http\Controllers\Api\NoticeController::class, "index"]);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post("/images", [\App\Http\Controllers\Api\ImageController::class, "store"]);
     Route::get("/user",function (Request $request) {
         return $request->user() ? \App\Http\Resources\UserResource::make($request->user()) : "";
     });

@@ -133,6 +133,12 @@ class InitSeeder extends Seeder
             "https://www.youtube.com/watch?v=Th62twZftf4",
             "https://www.youtube.com/watch?v=2sosdA22MuA",
             "https://www.youtube.com/watch?v=x_HVs3bLEt0",
+            "https://www.youtube.com/watch?v=UdzlCS-34Ts",
+            "https://www.youtube.com/watch?v=85c_UVhhjrI",
+            "https://www.youtube.com/watch?v=cFsGCYlbt-s",
+            "https://www.youtube.com/watch?v=Th62twZftf4",
+            "https://www.youtube.com/watch?v=2sosdA22MuA",
+            "https://www.youtube.com/watch?v=x_HVs3bLEt0",
         ];
 
         foreach($items as $item){
@@ -235,7 +241,7 @@ class InitSeeder extends Seeder
 
     public function createSpecials()
     {
-        Special::factory()->count(10)->create();
+        Special::factory()->count(12)->create();
     }
 
     public function createSearchRankings()
